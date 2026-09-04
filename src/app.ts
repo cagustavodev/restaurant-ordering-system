@@ -243,10 +243,11 @@ app.delete("/products/:id", (req, res) => {
 // supabase
 //============
 app.get("/test-supabase", async(req, res) => {
-    const { data, error } = await supabase
-    .from("categorias")
-    .select("*");
+    const { data, error } = await supabase //traz dados e erros (método assincrono)
+    .from("categories")
+    .select("*"); //all = select * from table (SQL) = get
 
+    //se der erro:
     if(error){
         console.log("Erro ao consultar Supabase", error);
 
@@ -257,10 +258,11 @@ app.get("/test-supabase", async(req, res) => {
         });
     }
 
+    //se der certo
     res.status(200).json({
         success: true,
         message: "Conexão com supabase realizada com sucesso",
-        data,
+        data, //traz os dados
     });
 });
 
