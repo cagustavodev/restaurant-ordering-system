@@ -13,5 +13,5 @@ async function findAll() {
 }
 
 export default{
-    findAll
+    findAll //puxa tudo
 }
