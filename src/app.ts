@@ -1,62 +1,11 @@
 import express from "express";
-import { randomUUID } from "node:crypto";
-import supabase from "./config/supabase.js";
+import Category from "./models/Category.js";
+import Product from "./models/Product.js";
 
 
 const app = express();
 
 app.use(express.json());
-
-const pizzaCategoryId = randomUUID();
-const drinksCategoryId = randomUUID();
-
-//=============
-//initial date
-//=============
-
-const categories = [
-    {
-        "id": pizzaCategoryId,
-        "name": "Pizzas",
-        "description": "Pizzas salgadas com diversos sabores, ingredientes e tamanhos."
-    },
-    {
-        "id": drinksCategoryId,
-        "name": "Bebidas",
-        "description": "Bebidas para acompanhar a pizza, incluindo refrigerantes, sucos e água."
-    },
-];
-
-const products = [
-    {
-        "id": randomUUID(),
-        "categoryId": pizzaCategoryId,
-        "name": "Pizza Calabresa",
-        "description": "Molho de tomate, mussarela, calabresa fatiada, cebola e orégano.",
-        "price": 45.90
-    },
-    {
-        "id": randomUUID(),
-        "categoryId": pizzaCategoryId,
-        "name": "Pizza Frango com Catupiry",
-        "description": "Molho de tomate, mussarela, frango desfiado, catupiry e orégano.",
-        "price": 49.90
-    },
-    {
-        "id": randomUUID(),
-        "categoryId": drinksCategoryId,
-        "name": "Refrigerante Coca-Cola 2L",
-        "description": "Refrigerante Coca-Cola tradicional em garrafa de 2 litros.",
-        "price": 12.00
-    },
-    {
-        "id": randomUUID(),
-        "categoryId": pizzaCategoryId,
-        "name": "Pizza de Chocolate",
-        "description": "Pizza doce com chocolate cremoso e granulado.",
-        "price": 42.90
-    }
-]
 
 //=============
 //root
@@ -73,197 +22,65 @@ app.get("/", (req, res) => {
 //categories
 //=============
 
-app.get("/categories", (req, res) => {
-    res.status(200).json(categories); // 200 é para GET, receber
-});
+app.get("/categories", async (req,res) => {
+    try{
+        const categories = await Category.findAll();
 
-//=============
-//categories by id
-//=============
+        res.status(200).json(categories);
+    }catch (error){
+        console.error("Erro ao buscar categorias: ", error);
 
-app.get("/categories/:id", (req, res) => {
-    const category = categories.find((category) => {
-        return category.id == req.params.id;
-    });
-
-    if(!category){
-        return res.status(404).json({ // 404 = error
-            message: "Categoria não encontrada"
-        });
+        res.status(500).json({
+            message: "Erro ao buscar categorias",
+        })
     }
-
-    res.status(200).json(category); 
 });
 
-//=============
-//post categories
-//=============
 
-app.post("/categories", (req, res) => {
-    const category = {
-        id: randomUUID(),
-        ...req.body,
-    };
-    
-    categories.push(category);
-    
-    res.status(201).json(category); //201 é para POST, receber, no postman tem que salvar tudo 
-});
+app.get("/categories/:id", async (req,res) => {
+    try{
+        const category = await Category.findById(req.params.id);
 
-//=============
-//put/update categories
-//=============
+        res.status(200).json(category);
+    }catch (error){
+        console.error("Erro ao buscar categoria: ", error);
 
-//put = update
-app.put("/categories/:id", (req, res) => {
-    const category = categories.find((category) => {
-        return category.id == req.params.id;
-    });
-
-    if(!category){
-        return res.status(404).json({ // 404 = error
-            message: "Categoria não encontrada"
-        });
+        res.status(500).json({
+            message: "Erro ao buscar categoria",
+        })
     }
-
-    category.name = req.body.name;
-    category.description = req.body.description;
-
-    res.status(200).json(category); 
 });
 
-//=============
-//delete categories
-//=============
+app.post("/categories", async (req,res) => {
+    try{
+        const category = await Category.create(req.body);
 
-app.delete("/categories/:id", (req, res) => {
-    const category = categories.find((category) => {
-        return category.id == req.params.id;
-    });
+        res.status(200).json(category);
+    }catch (error){
+        console.error("Erro ao criar categoria: ", error);
 
-    if(!category){
-        return res.status(404).json({ // 404 = error
-            message: "Categoria não encontrada"
-        });
+        res.status(500).json({
+            message: "Erro ao criar categoria",
+        })
     }
-
-    const index = categories.indexOf(category);
-    categories.splice(index,1) //numero de elementos a remover
-
-    res.status(200).json({
-        message: "Categoria removida com sucesso "
-    }); 
 });
 
 //====================================
 //PRODUCTS
 //====================================
 
-//============
-// products get and post
-//============
-app.get("/products", (req, res) => {
-    res.status(200).json(products);
-});
+app.get("/products", async (req,res) => {
+    try{
+        const products = await Product.findAll();
 
-app.post("/products", (req, res) => {
-    const product = {
-        id: randomUUID(),
-        ...req.body,
-    };
-    products.push(product);
-    res.status(201).json(product); //201 é para POST, receber, no postman tem que salvar tudo 
-});
+        res.status(200).json(products);
+    }catch (error){
+        console.error("Erro ao buscar produtos: ", error);
 
-//===============
-//products by id
-//===============
-
-app.get("/products/:id", (req, res) => {
-    const product = products.find((product) => {
-        return product.id == req.params.id;
-    });
-
-    if(!product){
-        return res.status(404).json({
-            message: "Product não encontrada"
-        });
+        res.status(500).json({
+            message: "Erro ao buscar produtos",
+        })
     }
-
-    res.status(200).json(product); 
-});
-
-//===============
-//products update
-//===============
-
-app.put("/products/:id", (req, res) => {
-    const product = products.find((product) => {
-        return product.id == req.params.id;
-    });
-
-    if(!product){
-        return res.status(404).json({ // 404 = error
-            message: "Produto não encontrada"
-        });
-    }
-
-    product.name = req.body.name;
-    product.description = req.body.description;
-    product.price = req.body.price;
-    product.categoryId = req.body.categoryId;
-
-    res.status(200).json(product); 
-});
-
-//===============
-//products delete
-//===============
-
-app.delete("/products/:id", (req, res) => {
-    const product = products.find((product) => {
-        return product.id == req.params.id;
-    });
-
-    if(!product){
-        return res.status(404).json({ // 404 = error
-            message: "Produto não encontrado"
-        });
-    }
-
-    const index = products.indexOf(product);
-    products.splice(index,1) //numero de elementos a remover
-
-    res.status(200).json({
-        message: "Produto removido com sucesso "
-    }); 
-});
-
-//============
-// supabase
-//============
-app.get("/test-supabase", async(req, res) => {
-    const { data, error } = await supabase //traz dados e erros (método assincrono)
-    .from("categories")
-    .select("*"); //all = select * from table (SQL) = get
-
-    //se der erro:
-    if(error){
-        console.log("Erro ao consultar Supabase", error);
-
-        return res.status(500).json({
-            success: false,
-            message: "erro ao consultar o banco de dados",
-            error: error.message,
-        });
-    }
-
-    //se der certo
-    res.status(200).json({
-        success: true,
-        message: "Conexão com supabase realizada com sucesso",
-        data, //traz os dados
-    });
 });
 
 export default app;
