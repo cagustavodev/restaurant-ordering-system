@@ -12,6 +12,45 @@ async function findAll() {
     return data;
 }
 
+
+async function findById(id: string) {
+    const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("id",id)
+    .single();
+
+    if(error){
+        throw error;
+    }
+    return data;
+
+}
+
+
+async function create(product: {
+    title: string;
+    description: string
+    price: number;
+    image: string;
+    available: boolean
+    active: boolean
+}) {
+    const { data, error } = await supabase
+        .from("products")
+        .insert(product)
+        .select()
+        .single();
+        
+    if (error){
+        throw error;
+    }
+
+    return data;
+}
+
 export default{
-    findAll //puxa tudo
+    findAll, //puxa tudo
+    findById, //puxa tudo
+    create
 }
