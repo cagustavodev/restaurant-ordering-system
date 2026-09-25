@@ -12,6 +12,8 @@ app.use(express.json());
 // 500 = erro 
 // 404 = não encontrado
 
+//toda vez que mudar de maquina readicionar o env
+
 //=============
 //root
 //=============
@@ -146,7 +148,7 @@ app.get("/products/:id", async (req,res) => {
 })
 
 
-app.post("/products/:id", async (req,res) => {
+app.post("/products/", async (req,res) => {
     try{
         const product = await Product.create(req.body)
         res.status(200).json(product)
@@ -159,6 +161,38 @@ app.post("/products/:id", async (req,res) => {
         })
     }
 })
+
+
+app.put("/products/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await Product.update(id, req.body);
+
+        res.json(product);
+    } catch (error) {
+        console.log("Erro ao atualizar produto: ", error);
+        res.status(500).json({ message: "Erro ao atualizar produto" });
+    }
+});
+
+
+app.delete("/products/:id", async (req, res) => {
+    try {
+        await Product.remove(
+            req.params.id
+        );
+
+        res.status(200).json({
+            message: "Produto removido com sucesso"
+        });
+    } catch (error) {
+        console.error("Erro ao remover produto: ", error);
+
+        res.status(404).json({
+            message: "Produto não encontrado",
+        });
+    }
+});
 
 //tem que terminar
 
