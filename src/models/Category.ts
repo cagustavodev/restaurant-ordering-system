@@ -16,6 +16,7 @@ async function findAll() {
     return data;
 }
 
+
 // ===============
 // find by id - GET
 // ===============
@@ -33,6 +34,7 @@ async function findById(id: string) {
 
     return data;
 }
+
 
 // ===============
 // create a new item on category - POST
@@ -57,6 +59,7 @@ async function create(category:{
 
     return data;
 }
+
 
 // ===============
 // update of the data - UPDATE
@@ -104,13 +107,15 @@ async function remove(id: string) {
     return data;
 }
 
+
 async function searchByKeyword(Keyword: string){
     const { data, error } = await supabase
     .from("categories")
     .select("*")
-    .or(`name.ilike.%${Keyword}%,
-        description,ilike.%${Keyword}%`)
-    
+    .or(`name.ilike.%${Keyword}%,description.ilike.%${Keyword}%`)
+    .order("display_order", { ascending: true});
+     //% concatena e ${} pega o valor de uma variavel
+
     if(error){
         throw error;
     }
