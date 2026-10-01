@@ -3,6 +3,8 @@ import CategoryController from "../controller/CategoryController.js";
 
 const router = Router();
 
+//Category Routes
+
 router.get("/", CategoryController.getAll); //faz o get
 
 router.get("/search/:Keyword", CategoryController.getByKeyword); // faz o get das keywords
@@ -17,4 +19,4 @@ router.delete("/:id",  CategoryController.remove) // faz o remove de uma categor
 
 export default router;
 
-// pega de category as functions e joga na category controller e puxa do controller
+// pega de category as functions e joga na category controller e define esse processo como rota

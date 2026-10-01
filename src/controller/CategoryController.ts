@@ -137,4 +137,4 @@ export default{
     remove,
 }
 
-//controller controla toda a entrada de dados do usuario
+//controller controla toda a entrada de dados do usuario e 
