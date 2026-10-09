@@ -1,5 +1,4 @@
 import express from "express";
-import Category from "./models/Category.js";
 import Product from "./models/Product.js";
 import categoryRoutes from "./routes/categoryRoutes.js" // app recebe a rota e joga no server
 import productRoutes from "./routes/productRoutes.js" // app recee a rota e joga no server

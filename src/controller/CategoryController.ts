@@ -1,10 +1,11 @@
 import type { Request, Response } from "express"; //permite fazer requisições e obter respostas
-import Category from "../models/Category.js"; // recebe a categoria 
+import CategoryRepository from "../repository/CategoryRepository.js"; 
+// recebe a categoria do repositorio que contem o formato da categoria
 
 //função GET
 async function getAll(req: Request, res: Response){ 
     try{
-        const categories = await Category.findAll();
+        const categories = await CategoryRepository.findAll();
     
         res.status(200).json(categories);
     }catch (error){
@@ -27,7 +28,7 @@ async function getByKeyword(req: Request <{ Keyword:string }>, res: Response) {
     }
 
     try{
-        const categories = await Category.searchByKeyword(Keyword);
+        const categories = await CategoryRepository.searchByKeyword(Keyword);
         res.status(200).json(categories)
         
     }catch (error) {
@@ -51,7 +52,7 @@ async function getById(req: Request <{id: string}>, res:Response){
     }
 
     try{
-        const category = await Category.findById(
+        const category = await CategoryRepository.findById(
             req.params.id
         );
     
@@ -68,7 +69,7 @@ async function getById(req: Request <{id: string}>, res:Response){
 
 async function create(req: Request, res: Response){ 
     try{
-        const category = await Category.create(req.body);
+        const category = await CategoryRepository.create(req.body);
         res.status(200).json(category);
 
     }catch (error){
@@ -91,7 +92,7 @@ async function update(req: Request <{id: string}>, res:Response){
     }
 
     try{
-        const category = await Category.update(id, req.body );
+        const category = await CategoryRepository.update(id, req.body );
     
         res.status(200).json(category);
     }catch (error){
@@ -114,7 +115,7 @@ async function remove(req: Request <{id: string}>, res:Response){
     }
 
     try{
-        const category = await Category.remove(id);
+        const category = await CategoryRepository.remove(id);
     
         res.status(200).json({
             message: "Categoria removida com sucesso"
