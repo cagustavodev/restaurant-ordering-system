@@ -1,5 +1,6 @@
 import type { Request, Response } from "express"; //permite fazer requisições e obter respostas
 import CategoryRepository from "../repository/CategoryRepository.js"; 
+import { Category } from "../models/Category.js";
 // recebe a categoria do repositorio que contem o formato da categoria
 
 //função GET
@@ -56,7 +57,14 @@ async function getById(req: Request <{id: string}>, res:Response){
             req.params.id
         );
     
-        res.status(200).json(category);
+        res.status(200).json({
+            id: category.getId(),
+            name: category.getName(),
+            description: category.getDescription(),
+            icon: category.getIcon(),
+            display_order: category.getDisplayOrder(),
+            active: category.isActive()
+        });
     }catch (error){
         console.error("Erro ao consultar categoria: ", error);
     
@@ -68,9 +76,12 @@ async function getById(req: Request <{id: string}>, res:Response){
 
 
 async function create(req: Request, res: Response){ 
+    const {name, display_order, description, icon } = req.body
     try{
-        const category = await CategoryRepository.create(req.body);
-        res.status(200).json(category);
+        const category = new Category(name, display_order, description, icon);
+        const createdCategory = await CategoryRepository.create(category);
+
+        res.status(200).json(createdCategory);
 
     }catch (error){
         console.error("Erro ao criar categoria: ", error);
@@ -84,6 +95,7 @@ async function create(req: Request, res: Response){
 
 async function update(req: Request <{id: string}>, res:Response){
     const { id } = req.params;
+    const {name, display_order, description, icon } = req.body
 
     if(!id){ // se não tiver id informado dá erro
         res.status(404).json({
@@ -92,9 +104,12 @@ async function update(req: Request <{id: string}>, res:Response){
     }
 
     try{
-        const category = await CategoryRepository.update(id, req.body );
+        const category = await CategoryRepository.findById(id);
+
+        //criar validações
+        const updatedCategory = await CategoryRepository.update(category);
     
-        res.status(200).json(category);
+        res.status(200).json(updatedCategory);
     }catch (error){
         console.error("Erro ao atualizar categoria: ", error);
     
