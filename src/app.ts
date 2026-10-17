@@ -1,5 +1,4 @@
 import express from "express";
-import Product from "./models/Product.js";
 import categoryRoutes from "./routes/categoryRoutes.js" // app recebe a rota e joga no server
 import productRoutes from "./routes/productRoutes.js" // app recee a rota e joga no server
 
@@ -48,7 +47,7 @@ app.use("/categories", categoryRoutes);
 //PRODUCTS
 //====================================
 
-app.use("/products", productRoutes)
+app.use("/products", productRoutes);
 
 // app.get("/products", async (req,res) => {
 // });

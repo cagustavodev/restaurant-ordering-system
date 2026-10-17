@@ -5,7 +5,7 @@ const router = Router();
 
 router.get("/", ProductController.getAll);
 
-router.get("/search/:Keyword", ProductController.getByKeyword);
+router.get("/search", ProductController.search);
 
 router.get("/:id", ProductController.getById);
 
