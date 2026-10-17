@@ -1,8 +1,9 @@
 import supabase from "../config/supabase.js";
 import { Category } from "../models/Category.js"
+import { NotFoundError } from "../errors/NotFoundError.js";
 
 // ===============
-//find all the data on supabase - GET
+//find all  - GET
 // ===============
 
 async function findAll() {
@@ -27,10 +28,14 @@ async function findById(id: string) : Promise<Category> {
     .from("categories")
     .select("*")
     .eq("id",id)
-    .single();
+    .maybeSingle();
 
     if(error){
         throw error;
+    }
+
+    if(!data){
+        throw new NotFoundError("Categoria não encontrada");
     }
 
     return Category.restore(
@@ -45,7 +50,7 @@ async function findById(id: string) : Promise<Category> {
 
 
 // ===============
-// create a new item on category - POST
+// create new item on category - POST
 // ===============
 
 async function create(category: Category) {
@@ -82,7 +87,7 @@ async function update(category: Category) {
             description: category.getDescription(),
             icon: category.getIcon(),
             display_order: category.getDisplayOrder(),
-            active: category.isActive
+            active: category.isActive()
         })
         .eq("id",id)
         .select()
@@ -105,15 +110,24 @@ async function remove(id: string) {
     .from("categories")
     .delete()
     .eq("id",id)
-    .single();
+    .select()
+    .maybeSingle();
 
     if(error){
         throw error;
+    }
+    
+    if(!data){
+        throw new NotFoundError("Categoria não encontrada");
     }
 
     return data;
 }
 
+
+// ===============
+// search by keyword of the data - UPDATE
+// ===============
 
 async function searchByKeyword(Keyword: string){
     const { data, error } = await supabase
@@ -128,6 +142,7 @@ async function searchByKeyword(Keyword: string){
     }
     return data;
 }
+
 
 // ===============
 // export the data 
