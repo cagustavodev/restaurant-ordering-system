@@ -74,7 +74,7 @@ export class Category {
         if(typeof name !== "string" || name.trim().length === 0){
             throw new ValidationError( "O nome da categoria é obrigatório.");
         }
-        this.name = name;
+        this.name = name.trim();
     }
 
     changeDescription(description: string): void{
@@ -89,7 +89,7 @@ export class Category {
     // validação da entrada de valores do display order
         if(!Number.isInteger(display_order) || display_order < 0){
             throw new ValidationError( 
-                "A ordem de exibição deve ser um número inteiro maior ou igual a zero. "
+                "A ordem de exibição deve ser um número inteiro maior ou igual a zero."
             );
         }
 

@@ -24,10 +24,12 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "dev": "node --watch --env-file=.env --import=tsx/esm src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
@@ -37,6 +39,8 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.4",
-    "express": "^5.2.1"
+    "@vitest/coverage-v8": "^5.0.5",
+    "express": "^5.2.1",
+    "vitest": "^5.0.5"
   }
 }
