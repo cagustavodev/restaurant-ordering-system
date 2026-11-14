@@ -1,4 +1,8 @@
 import express from "express";
+
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger.js";
+
 import categoryRoutes from "./routes/categoryRoutes.js" // app recebe a rota e joga no server
 import productRoutes from "./routes/productRoutes.js" // app recee a rota e joga no server
 
@@ -12,18 +16,19 @@ app.use(express.json());
 // 500 = erro 
 // 404 = não encontrado
 
-//toda vez que mudar de maquina readicionar o env
-
 //=============
 //root
 //=============
 
-app.get("/", (req, res) => {
-    res.status(200).json({
-        message: "API restaurante",
-        version: "1.0.0"
-    });
-});
+app.get("/", (req, res) =>
+    res.redirect("/api-docs")
+);
+
+app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec)
+);
 
 //=============
 //categories - Process of GET, POST, UPDATE and DELETE

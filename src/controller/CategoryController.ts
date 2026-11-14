@@ -5,7 +5,7 @@ import { ValidationError } from "../errors/ValidationError.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 // recebe a categoria do repositorio que contem o formato da categoria
 
-//função GET
+
 async function getAll(req: Request, res: Response){ 
     try{
         const categories = await CategoryRepository.findAll();
